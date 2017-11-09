@@ -26,6 +26,10 @@
     <servlet-class>ListPDF</servlet-class>
   </servlet>
   <servlet>
+    <servlet-name>InsertMappedFields</servlet-name>
+    <servlet-class>InsertMappedFields</servlet-class>
+  </servlet>
+  <servlet>
     <servlet-name>FinishPDF</servlet-name>
     <servlet-class>GenPDF</servlet-class>
   </servlet>
@@ -52,6 +56,10 @@
   <servlet-mapping>
     <servlet-name>Test</servlet-name>
     <url-pattern>/Test</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>InsertMappedFields</servlet-name>
+    <url-pattern>/InsertMappedFields</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>ListPDF</servlet-name>

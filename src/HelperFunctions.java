@@ -95,7 +95,7 @@ public class HelperFunctions {
 						writer.println("line 99");
 						fieldToComplete.setValue(value);
 					} else {
-						String value = (String) currObject.get("value");
+						String value = currObject.get("value").toString(); //JENNY'S CHANGE
 						writer.println("line 104");
 						fieldToComplete.setValue(value);
 					}

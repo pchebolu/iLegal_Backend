@@ -9,10 +9,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -25,6 +27,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDChoice;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
+import org.json.JSONArray;
 import org.json.simple.JSONObject;
 
 
@@ -43,13 +46,12 @@ public class PDFLoad extends HttpServlet {
 		response.setContentType("application/json");
 		JSONObject returnable = new JSONObject();
 		returnable.put("MESSAGE", "No GET support on this endpoint");
-		PrintWriter output = response.getWriter();
-		output.print(returnable);
+		String json = returnable.toString();
+		response.getWriter().write(json);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//doGet(request, response);
 		response.setContentType("application/json");
 		String responseMessage = "NONE";
 		JSONObject returnable = new JSONObject();
@@ -62,6 +64,7 @@ public class PDFLoad extends HttpServlet {
 		String fileName = defaultFileName.substring(defaultFileName.indexOf("filename=\"") + 10, defaultFileName.indexOf(".pdf"));
 		String pdfFileName = !request.getParameter("FILENAME").equals("")?request.getParameter("FILENAME"):defaultFileName;
 		String pdfCategory = request.getParameter("CATEGORY");
+		returnable.put("Category", pdfCategory);
 		
 		StringBuilder pdfSaveLocation = new StringBuilder();
 		pdfSaveLocation.append(pdfBaseFolder);
@@ -69,39 +72,41 @@ public class PDFLoad extends HttpServlet {
 		pdfSaveLocation.append(fileName + ".pdf");
 		returnable.put("pdfSaveLocation", pdfSaveLocation.toString());
 		
-		try{
-		pdfPart.write(pdfSaveLocation.toString());
-		//Set File Permissions
-		Set<PosixFilePermission> otherReadablePermissionSet = new HashSet<>();
-		otherReadablePermissionSet.add(PosixFilePermission.OWNER_READ);
-		otherReadablePermissionSet.add(PosixFilePermission.OWNER_WRITE);
-		otherReadablePermissionSet.add(PosixFilePermission.OWNER_EXECUTE);
-		otherReadablePermissionSet.add(PosixFilePermission.GROUP_EXECUTE);
-		otherReadablePermissionSet.add(PosixFilePermission.GROUP_WRITE);
-		otherReadablePermissionSet.add(PosixFilePermission.GROUP_READ);
-		otherReadablePermissionSet.add(PosixFilePermission.OTHERS_READ);
-		otherReadablePermissionSet.add(PosixFilePermission.OTHERS_WRITE);
-		otherReadablePermissionSet.add(PosixFilePermission.OTHERS_EXECUTE);
-		Files.setPosixFilePermissions(Paths.get(pdfSaveLocation.toString()), otherReadablePermissionSet );
+		String[] fieldArray = null;
 		
-		Class.forName("com.mysql.jdbc.Driver");
-		dbConn = DriverManager.getConnection(serverURL, "root","Trojans17");
-		PreparedStatement query = (PreparedStatement) dbConn.prepareStatement(sqlInsertString);
-		query.setString(1, pdfFileName);
-		String fileUrl = pdfSaveLocation.toString();
-		int cutOffBase = fileUrl.indexOf(pdfCategory);
-		query.setString(2, fileUrl.substring(cutOffBase));
-		query.setString(3, pdfCategory);
-		query.executeUpdate();
-		PreparedStatement insertedElementID = (PreparedStatement) dbConn.prepareStatement(sqlSelectString);
-		insertedElementID.setString(1, pdfFileName);
-		insertedElementID.setString(2, fileUrl.substring(cutOffBase));
-		insertedElementID.setString(3, pdfCategory);
-		ResultSet elementRow = insertedElementID.executeQuery();
-		if(elementRow.first()){
-			docID = elementRow.getInt("Id");
-			responseMessage = String.valueOf(docID);
-		}
+		try{
+			pdfPart.write(pdfSaveLocation.toString());
+			//Set File Permissions
+			Set<PosixFilePermission> otherReadablePermissionSet = new HashSet<>();
+			otherReadablePermissionSet.add(PosixFilePermission.OWNER_READ);
+			otherReadablePermissionSet.add(PosixFilePermission.OWNER_WRITE);
+			otherReadablePermissionSet.add(PosixFilePermission.OWNER_EXECUTE);
+			otherReadablePermissionSet.add(PosixFilePermission.GROUP_EXECUTE);
+			otherReadablePermissionSet.add(PosixFilePermission.GROUP_WRITE);
+			otherReadablePermissionSet.add(PosixFilePermission.GROUP_READ);
+			otherReadablePermissionSet.add(PosixFilePermission.OTHERS_READ);
+			otherReadablePermissionSet.add(PosixFilePermission.OTHERS_WRITE);
+			otherReadablePermissionSet.add(PosixFilePermission.OTHERS_EXECUTE);
+			Files.setPosixFilePermissions(Paths.get(pdfSaveLocation.toString()), otherReadablePermissionSet );
+			
+			Class.forName("com.mysql.jdbc.Driver");
+			dbConn = DriverManager.getConnection(serverURL, "root","Trojans17");
+			PreparedStatement query = (PreparedStatement) dbConn.prepareStatement(sqlInsertString);
+			query.setString(1, pdfFileName);
+			String fileUrl = pdfSaveLocation.toString();
+			int cutOffBase = fileUrl.indexOf(pdfCategory);
+			query.setString(2, fileUrl.substring(cutOffBase));
+			query.setString(3, pdfCategory);
+			query.executeUpdate();
+			PreparedStatement insertedElementID = (PreparedStatement) dbConn.prepareStatement(sqlSelectString);
+			insertedElementID.setString(1, pdfFileName);
+			insertedElementID.setString(2, fileUrl.substring(cutOffBase));
+			insertedElementID.setString(3, pdfCategory);
+			ResultSet elementRow = insertedElementID.executeQuery();
+			if(elementRow.first()){
+				docID = elementRow.getInt("Id");
+				responseMessage = String.valueOf(docID);
+			}
 		}
 		catch(IOException e){
 			responseMessage = e.getMessage();
@@ -115,11 +120,9 @@ public class PDFLoad extends HttpServlet {
 			success = false;
 		}
 		
-		 File file;
-	   	//file = new File("/Users/jordanbanafsheha/Desktop/iLegal_Server_S/sc100.pdf");
+		File file;
 	    String path;
 	    path = pdfSaveLocation.toString();
-	    //OoPdfFormExample
 	    file = new File(path);
 	    //making sure it exists and works
 	    if(!file.exists() || file.isDirectory()) { 
@@ -149,12 +152,14 @@ public class PDFLoad extends HttpServlet {
 		    	fieldList = acroForm.getFields();
 
 		    	// String the object array
-		    	String[] fieldArray = new String[fieldList.size()];
+		    	fieldArray = new String[fieldList.size()];
+		    	
 		    	int i = 0;
 		    	for (PDField sField : fieldList) {
 		        	fieldArray[i] = sField.getFullyQualifiedName();
 		        	i++;
 		    	}
+		    	returnable.put("FieldArray", new JSONArray(Arrays.asList(fieldArray)));
 		    	//
 		    	for (String f : fieldArray) {
 		    		PDField field = acroForm.getField(f);
@@ -212,9 +217,68 @@ public class PDFLoad extends HttpServlet {
 		 responseMessage = x.getMessage();  
 		 success = false;
 		}
+	    
+	    //GET MAPPING FIELDS POSSIBILITIES
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			java.sql.Connection dbConnFin2 = DriverManager.getConnection(serverURL, "root", "Trojans17");
+			
+			PreparedStatement findMappingFields = (PreparedStatement) dbConnFin2.prepareStatement("SELECT * FROM mapping_fields WHERE category=? OR category=?");
+			findMappingFields.setString(1, "General");
+			findMappingFields.setString(2, pdfCategory);
+			ResultSet mappingFields = findMappingFields.executeQuery();
+			
+            JSONArray data = new JSONArray();
+            while (mappingFields.next()) 
+            {
+                JSONArray row = new JSONArray();
+                row.put(mappingFields.getString("id"));
+                row.put(mappingFields.getString("full_field_name"));
+                data.put(row);
+            }
+            returnable.put("MappingArray", data);
+			
+			dbConnFin2.close();
+			
+		} catch (ClassNotFoundException e) {
+			responseMessage = e.getMessage();  
+			success = false;
+		} catch (SQLException e) {
+			responseMessage = e.getMessage();  
+			success = false;
+		}
 		
+		//GET FIELD IDS
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			java.sql.Connection dbConnFin3 = DriverManager.getConnection(serverURL, "root", "Trojans17");
+			
+			PreparedStatement findFieldIDS = (PreparedStatement) dbConnFin3.prepareStatement("SELECT * FROM pdf_structure WHERE pdf_id=?");
+			findFieldIDS.setInt(1, docID);
+			ResultSet fieldIds = findFieldIDS.executeQuery();
+			
+            JSONArray data = new JSONArray();
+            while (fieldIds.next()) 
+            {
+                data.put(fieldIds.getString("id"));
+            }
+            returnable.put("FieldIDArray", data);
+			
+			dbConnFin3.close();
+			
+		} catch (ClassNotFoundException e) {
+			responseMessage = e.getMessage();  
+			success = false;
+		} catch (SQLException e) {
+			responseMessage = e.getMessage();  
+			success = false;
+		}
+		
+		returnable.put("PDFName", pdfFileName);
+		returnable.put("Category", pdfCategory);
 		returnable.put("Message", responseMessage);
 		returnable.put("Success", success);
-		response.getWriter().print(returnable);
+		String json = returnable.toString();
+		response.getWriter().write(json);
 	}
 }
