@@ -37,6 +37,30 @@
     <servlet-name>FillPDF</servlet-name>
     <servlet-class>FillPDF</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>InsertMappingField</servlet-name>
+    <servlet-class>InsertMappingField</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>GetMappingFields</servlet-name>
+    <servlet-class>GetMappingFields</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>GetMappedField</servlet-name>
+    <servlet-class>GetMappedField</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UpdateSecondary</servlet-name>
+    <servlet-class>UpdateSecondary</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>InsertMappingField</servlet-name>
+    <url-pattern>/InsertMappingField</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetMappingFields</servlet-name>
+    <url-pattern>/GetMappingFields</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PDFLoader</servlet-name>
     <url-pattern>/UploadPDF</url-pattern>
@@ -62,6 +86,10 @@
     <url-pattern>/InsertMappedFields</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
+    <servlet-name>UpdateSecondary</servlet-name>
+    <url-pattern>/UpdateSecondary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
     <servlet-name>ListPDF</servlet-name>
     <url-pattern>/ListPDF</url-pattern>
   </servlet-mapping>
@@ -72,6 +100,10 @@
   <servlet-mapping>
     <servlet-name>FillPDF</servlet-name>
     <url-pattern>/FinPDF</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>GetMappedField</servlet-name>
+    <url-pattern>/GetMappedField</url-pattern>
   </servlet-mapping>
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
