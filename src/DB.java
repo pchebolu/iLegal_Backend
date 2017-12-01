@@ -7,14 +7,12 @@ import java.util.Locale;
 public class DB {
 
     // fields
-
     private Connection connection;
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "Trojans17";
     private static final String SERVER_URL = "jdbc:mysql://localhost:3306/capstonedb?useSSL=false";
 
     // constructors
-
     DB(Connection connection) {
         this.connection = connection;
     }
@@ -24,7 +22,6 @@ public class DB {
     }
 
     // methods
-
     void close() throws SQLException {
         connection.close();
     }
@@ -56,5 +53,4 @@ public class DB {
             return e.getMessage();
         }
     }
-
 }

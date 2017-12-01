@@ -1,6 +1,3 @@
-
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -8,14 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,7 +17,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.mysql.jdbc.PreparedStatement;
-
 
 public class GenPDF extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -50,7 +42,7 @@ public class GenPDF extends HttpServlet {
 		
 		if(request.getParameter("PdfID") != null){
 			try {
-				//Recieving key PdfID
+				//Receiving key PdfID
 				Class.forName("com.mysql.jdbc.Driver");
 				dbConn = DriverManager.getConnection(serverURL,"root","Trojans17");
 				Integer id = Integer.valueOf(request.getParameter("PdfID") );
@@ -131,5 +123,4 @@ public class GenPDF extends HttpServlet {
 			mValues.add(val);
 		}
 	}
-
 }

@@ -18,10 +18,6 @@
     <servlet-class>UpdateUser</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>Test</servlet-name>
-    <servlet-class>Test</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>ListPDF</servlet-name>
     <servlet-class>ListPDF</servlet-class>
   </servlet>
@@ -76,10 +72,6 @@
   <servlet-mapping>
     <servlet-name>UpdateUser</servlet-name>
     <url-pattern>/UpdateUser</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
-    <servlet-name>Test</servlet-name>
-    <url-pattern>/Test</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>InsertMappedFields</servlet-name>

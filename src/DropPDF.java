@@ -1,20 +1,14 @@
-
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.json.simple.JSONObject;
-
-
 
 /**
  * Servlet implementation class DropPDF
@@ -24,8 +18,6 @@ public class DropPDF extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private String serverURL = "jdbc:mysql://localhost:3306/capstonedb?useSSL=false";
 	private String sqlDelCommand = "DELETE FROM filled_pdfs WHERE UniqueID = ?";
-
-       
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
@@ -68,11 +60,9 @@ public class DropPDF extends HttpServlet {
 				returnMessage = e.getMessage();
 				e.printStackTrace();
 			}
-		}
-		
+		}		
 		outputObject.put("Success", successfulDelete);
 		outputObject.put("Message", returnMessage);
 		response.getWriter().print(outputObject);
 	}
-
 }

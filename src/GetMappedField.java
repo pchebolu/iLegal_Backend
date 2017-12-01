@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -145,8 +142,7 @@ public class GetMappedField extends HttpServlet {
 	
 	protected ResultSet getSecondaryProfileMapping(String fullFieldName, int userID, int mappingID, Connection dbConn) {
 		String autofill = "";
-		
-		
+				
 		try {
 			PreparedStatement selectSecondaryStatement = (PreparedStatement) dbConn.prepareStatement(sqlSelectSecondaryString);
 
@@ -208,5 +204,4 @@ public class GetMappedField extends HttpServlet {
 		}
 		return autofill;
 	}
-
 }

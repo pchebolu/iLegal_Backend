@@ -1,6 +1,3 @@
-
-
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -11,7 +8,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -122,8 +118,6 @@ public class ListPDF extends HttpServlet {
 			obj.put("Message", message);
 			dbConn.close(); 
 			output.print(obj);
-			
-
 		}
 		catch(ClassNotFoundException e) {
 			obj.put("Message", e.getMessage());
@@ -143,5 +137,4 @@ public class ListPDF extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }
